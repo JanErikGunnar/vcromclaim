@@ -35,7 +35,9 @@ def convert_neogeo(inputFile, outputFolder):
         '001': (convert_nam1975, "nam1975"),
         '005': (convert_maglordh, "maglordh"),
         '016': (convert_kotm, "kotm"),
+        '055': (convert_kof94, "kof94"),
         '062': (convert_spinmast, "spinmast"),
+        '066': (convert_karnovr, "karnovr"),
         '200': (convert_turfmast, "turfmast"),
         '201': (convert_mslug, "mslug"),
         '223': (convert_rbffspec, "rbffspec"),
@@ -138,6 +140,32 @@ def convert_kotm(input, output):
     output.createFile("s1.s1", input.regions['S'].data)
 
     convert_common_c(input, output, 2)
+
+def convert_kof94(input, output):
+    
+    output.createFile("p1.p1", 
+        getPart(input.regions['P'].data, 1, 1024*KILOBYTE)
+        + getPart(input.regions['P'].data, 0, 1024*KILOBYTE))
+
+    output.createFile("m1.m1", input.regions['M'].data)
+
+    split_region(input, output, 'V1', ['v1.v1', 'v2.v2', 'v3.v3'])
+
+    output.createFile("s1.s1", pad(input.regions['S'].data, 128*KILOBYTE))
+
+    convert_common_c(input, output, 4)
+
+def convert_karnovr(input, output):
+    # CRC is incorrect for p1, otherwise all CRCs match
+    output.createFile("p1.p1", input.regions['P'].data)
+
+    output.createFile("m1.m1", input.regions['M'].data)
+
+    split_region(input, output, 'V1', ['v1.v1'])
+
+    output.createFile("s1.s1", pad(input.regions['S'].data, 128*KILOBYTE))
+
+    convert_common_c(input, output, 3)
 
 def convert_spinmast(input, output):
 
